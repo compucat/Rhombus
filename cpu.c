@@ -373,8 +373,16 @@ inline void cv(void) {OpcodeNotDone();}
 inline void lea(void) {OpcodeNotDone();}
 inline void push(void) {OpcodeNotDone();}
 inline void pop(void) {OpcodeNotDone();}
-inline void nop(void) {OpcodeNotDone();}
-inline void mul(void) {OpcodeNotDone();}
+inline void nop(void)
+{
+	return;
+}
+inline void mul(void)
+{
+	unsigned int i=opera1*opera3;
+	productHigh=i>>16;
+	productLow=i-(productHigh<<16);
+}
 inline void stsp(void) {OpcodeNotDone();}
 inline void prod(void) {OpcodeNotDone();}
 inline void jr(void) {OpcodeNotDone();}
