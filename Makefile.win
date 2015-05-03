@@ -1,0 +1,37 @@
+# Project: Rhombus
+# Makefile created by Dev-C++ 5.5.3
+
+CPP      = g++.exe
+CC       = gcc.exe
+WINDRES  = windres.exe
+OBJ      = main.o example.o cpu.o notes.o
+LINKOBJ  = main.o example.o cpu.o notes.o
+LIBS     = -L"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib32" -L"C:/Program Files (x86)/Dev-Cpp/MinGW64/x86_64-w64-mingw32/lib32" -L"E:/Clibs/SDL2-2.0.3/i686-w64-mingw32/lib" -static-libgcc -lopengl32  -m32
+INCS     = -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include" -I"E:/Clibs/SDL2-2.0.3/i686-w64-mingw32/include/SDL2" -I"E:/Clibs/libfmsynth-master/include"
+CXXINCS  = -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.7.1/include/c++"
+BIN      = Rhombus.exe
+CXXFLAGS = $(CXXINCS) -m32
+CFLAGS   = $(INCS) -m32
+RM       = rm -f
+
+.PHONY: all all-before all-after clean clean-custom
+
+all: all-before $(BIN) all-after
+
+clean: clean-custom
+	${RM} $(OBJ) $(BIN)
+
+$(BIN): $(OBJ)
+	$(CC) $(LINKOBJ) -o $(BIN) $(LIBS)
+
+main.o: main.c
+	$(CC) -c main.c -o main.o $(CFLAGS)
+
+example.o: example.c
+	$(CC) -c example.c -o example.o $(CFLAGS)
+
+cpu.o: cpu.c
+	$(CC) -c cpu.c -o cpu.o $(CFLAGS)
+
+notes.o: notes.c
+	$(CC) -c notes.c -o notes.o $(CFLAGS)
