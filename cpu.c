@@ -274,12 +274,46 @@ inline void CPUcycle(void)
 
 //Opcode functions
 inline void movih(void) {OpcodeNotDone();}
-inline void add(void) {OpcodeNotDone();}
-inline void addi(void) {OpcodeNotDone();}
-inline void adc(void) {OpcodeNotDone();}
-inline void adci(void) {OpcodeNotDone();}
-inline void sub(void) {OpcodeNotDone();}
-inline void subi(void) {OpcodeNotDone();}
+inline void add(void) 
+{
+	int i=opera1+opera3;
+	if(i>65535) carryFlag=1;
+	else carryFlag=0;
+	opera1+=opera3;
+}
+inline void addi(void)
+{
+	int i=opera1+(opera3+(opera2<<3)-0b10000000);
+	if(i>65535) carryFlag=1;
+	else carryFlag=0;
+	opera1+=(opera3+(opera2<<3)-0b10000000);
+}
+inline void adc(void)
+{
+	int i=opera1+opera3;
+	if(carryFlag==1) i++;
+	opera1+=opera3;
+	if(carryFlag==1) opera1++;
+	if(i>65535) carryFlag=1;
+	else carryFlag=0;
+}
+inline void adci(void)
+{
+	int i=opera1+(opera3+(opera2<<3)-0b10000000);
+	if(carryFlag==1) i++;
+	opera1+=(opera3+(opera2<<3)-0b10000000);
+	if(carryFlag==1) opera1++;
+	if(i>65535) carryFlag=1;
+	else carryFlag=0;
+}
+inline void sub(void)
+{
+	opera1-=opera3;
+}
+inline void subi(void)
+{
+	opera1-=(opera3+(opera2<<3)-0b10000000);
+}
 inline void and_inst(void)
 {
 	GPreg[opera1]=GPreg[opera1]&GPreg[opera3];
@@ -306,7 +340,7 @@ inline void xori(void)
 }
 inline void cmp(void)
 {
-	if(GPreg[opera1]==GPreg[opera2]) zeroFlag=1;
+	if(GPreg[opera1]==GPreg[opera3]) zeroFlag=1;
 	else zeroFlag=0;
 }
 inline void cmpi(void)
