@@ -100,9 +100,10 @@ inline void CPUcycle(void)
 {
 	if(CPU_SWITCH_DEBUG==1) printf("CPU Cycle! PC=%d\n", PC);
 	instruction=CPUReadMemory(PC);
+	/* TODO (sirwinstoncat5#1#): TODO: Rewrite test ROM as little-endian */
 	//Swap first and last 2 bytes
-	instruction=(instruction>>8)+(instruction<<8);
-	if(CPU_SWITCH_DEBUG==1) printf("Instruction: %x\n", instruction);
+	//instruction=(instruction>>8)+(instruction<<8);
+	//if(CPU_SWITCH_DEBUG==1) printf("Instruction: %x\n", instruction);
 	//Decode instruction into opcode and operands
 	//Note that depending on addressing mode, some operands may be garbage
 	opgroup=instruction>>14;
