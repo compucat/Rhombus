@@ -6,7 +6,9 @@
 //*****Begin definitions/prototypes*****
 
 //Memory stuff
-extern uint16_t fpga_mem[1048576];
+/* TODO (sirwinstoncat5#9#): Redo memory handling from using words to 
+                             using bytes */
+extern uint16_t fpga_mem[1048576]; 
 uint16_t GPreg[8], PC, SP, productHigh, productLow;
 int zeroFlag, carryFlag;
 inline uint16_t CPUReadMemory(int address);
@@ -91,7 +93,7 @@ inline void CPUWriteMemory(int address, uint16_t value)
 void CPUinit(void)
 {
 	PC=0;
-	
+	//ROM is loaded by main.c
 }
 
 inline void CPUcycle(void)
