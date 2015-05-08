@@ -3,16 +3,17 @@
 #include <stdio.h>
 #include <stdint.h>
 #define CPU_SWITCH_DEBUG 0
+#define BINARY_BIG_ENDIAN 1
 //*****Begin definitions/prototypes*****
 
 //Memory stuff
 /* TODO (sirwinstoncat5#9#): Redo memory handling from using words to 
                              using bytes */
-extern uint16_t fpga_mem[1048576]; 
+extern uint8_t fpga_mem[2097152]; 
 uint16_t GPreg[8], PC, SP, productHigh, productLow;
 int zeroFlag, carryFlag;
-inline uint16_t CPUReadMemory(int address);
-inline void CPUWriteMemory(int address, uint16_t value);
+inline uint8_t CPUReadMemory(int address);
+inline void CPUWriteMemory(int address, uint8_t value);
 
 //CPU cycle variables
 uint16_t instruction, opgroup, opcodea, opcodeb, opcodec, opera1, opera2, opera3, operb, operc1, operc2, operc3;
@@ -32,7 +33,7 @@ void CPUinit(void);
 inline void CPUcycle(void);
 
 //Opcode function prototypes
-void OpcodeNotDone(void) {printf("CPU Error: Opcode not written yet!\n");}
+void OpcodeNotDone(void) {error("CPU Error: Opcode not written yet!\n");}
 inline void movih(void);
 inline void add(void);
 inline void addi(void);
@@ -102,7 +103,7 @@ inline void CPUcycle(void)
 	instruction=CPUReadMemory(PC);
 	/* TODO (sirwinstoncat5#1#): TODO: Rewrite test ROM as little-endian */
 	//Swap first and last 2 bytes
-	//instruction=(instruction>>8)+(instruction<<8);
+	if(BINARY_BIG_ENDIAN==1) instruction=(instruction>>8)+(instruction<<8);
 	//if(CPU_SWITCH_DEBUG==1) printf("Instruction: %x\n", instruction);
 	//Decode instruction into opcode and operands
 	//Note that depending on addressing mode, some operands may be garbage

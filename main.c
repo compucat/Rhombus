@@ -8,7 +8,7 @@
 
 #include <stdio.h>
 #include <stdint.h>
-uint16_t fpga_mem[1048576];
+uint8_t fpga_mem[2097152];
 //uint16_t cpu_cache[8192];
 main()
 {
