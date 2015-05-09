@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <stdint.h>
 #define CPU_SWITCH_DEBUG 0
-#define BINARY_BIG_ENDIAN 1
+#define BINARY_BIG_ENDIAN 1 //currently useless
 //*****Begin definitions/prototypes*****
 
 //Memory stuff
@@ -12,8 +12,8 @@
 extern uint8_t fpga_mem[2097152]; 
 uint16_t GPreg[8], PC, SP, productHigh, productLow;
 int zeroFlag, carryFlag;
-inline uint8_t CPUReadMemory(int address);
-inline void CPUWriteMemory(int address, uint8_t value);
+inline uint8_t CPUReadMemory(uint16_t address);
+inline void CPUWriteMemory(uint16_t address, uint8_t value);
 
 //CPU cycle variables
 uint16_t instruction, opgroup, opcodea, opcodeb, opcodec, opera1, opera2, opera3, operb, operc1, operc2, operc3;
@@ -89,11 +89,11 @@ inline void initv(void);
 
 //*****Begin functions*****
 
-inline uint8_t CPUReadMemory(int address)
+inline uint8_t CPUReadMemory(uint16_t address)
 {
 	return fpga_mem[address];
 }
-inline void CPUWriteMemory(int address, uint8_t value)
+inline void CPUWriteMemory(uint16_t address, uint8_t value)
 {
 	fpga_mem[address]=value;
 }
@@ -101,6 +101,7 @@ inline void CPUWriteMemory(int address, uint8_t value)
 void CPUinit(void)
 {
 	PC=0;
+	SP=131072;
 	//ROM is loaded by main.c
 }
 
@@ -303,7 +304,10 @@ inline void CPUcycle(void)
 }
 
 //Opcode functions
-inline void movih(void) {OpcodeNotDone();}
+inline void movih(void)
+{
+	GPreg[opera1]=(opcodea-(opgroup<<3))+(opera2<<3)+opera3;
+}
 inline void add(void) 
 {
 	int i=GPreg[opera1]+GPreg[opera3];
@@ -388,12 +392,54 @@ inline void movi(void)
 }
 //Branches
 inline void bgt(void) {OpcodeNotDone();}
-inline void bne(void) {OpcodeNotDone();}
-inline void bcc(void) {OpcodeNotDone();}
-inline void bcs(void) {OpcodeNotDone();}
-inline void beq(void) {OpcodeNotDone();}
+inline void bne(void)
+{
+	if(zeroFlag==0)
+	{
+		int i;
+		if((operb>>8)==1) i=0-(operb-0b100000000); //Negative signed number
+		else i=(operb-0b100000000); //Positive signed number
+		PC+=i;
+	}
+}
+inline void bcc(void)
+{
+	if(carryFlag==0)
+	{
+		int i;
+		if((operb>>8)==1) i=0-(operb-0b100000000); //Negative signed number
+		else i=(operb-0b100000000); //Positive signed number
+		PC+=i;
+	}
+}
+inline void bcs(void)
+{
+	if(carryFlag==1)
+	{
+		int i;
+		if((operb>>8)==1) i=0-(operb-0b100000000); //Negative signed number
+		else i=(operb-0b100000000); //Positive signed number
+		PC+=i;
+	}
+}
+inline void beq(void)
+{
+	if(zeroFlag==1)
+	{
+		int i;
+		if((operb>>8)==1) i=0-(operb-0b100000000); //Negative signed number
+		else i=(operb-0b100000000); //Positive signed number
+		PC+=i;
+	}
+}
 inline void ble(void) {OpcodeNotDone();}
-inline void bal(void) {OpcodeNotDone();}
+inline void bal(void)
+{
+	int i;
+	if((operb>>8)==1) i=0-(operb-0b100000000); //Negative signed number
+	else i=(operb-0b100000000); //Positive signed number
+	PC+=i;
+}
 //Subroutine calls
 inline void cgt(void) {OpcodeNotDone();}
 inline void cne(void) {OpcodeNotDone();}
@@ -414,8 +460,18 @@ inline void cv(void) {OpcodeNotDone();}
 //Load effective address
 inline void lea(void) {OpcodeNotDone();}
 //Miscellaneous
-inline void push(void) {OpcodeNotDone();}
-inline void pop(void) {OpcodeNotDone();}
+inline void push(void)
+{
+	CPUWriteMemory((GPreg[opera1]>>8), SP-1); //Assuming big endian
+	CPUWriteMemory((GPreg[opera1]&0b0000000011111111), SP);
+	SP-=2;
+}
+inline void pop(void)
+{
+	GPreg[opera1]=CPUReadMemory(++SP);
+	GPreg[opera1]=GPreg[opera1]<<8;
+	GPreg[opera1]+=CPUReadMemory(++SP);
+}
 inline void nop(void)
 {
 	return;

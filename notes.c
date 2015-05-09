@@ -14,10 +14,10 @@ The 16k cache is not emulated; all components access RAM directly. As such, the 
 
 Addressing modes:
 	Mode A: aa bbb ccc ddddd eee
-	Mode B: aa b cccc dddddd eee
+	Mode B: aa b bbbb cccccc ccc
 	Mode C: aa bbb ccc d eeeeeee
 
-
+where a: opgroup, b: opcode, c: operand 1, d: operand 2, e: operand 3
 
 
 CPU Instructions
