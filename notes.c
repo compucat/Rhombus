@@ -1,4 +1,14 @@
 /*
+Opgroups (binary):
+00: movih (mode A)
+01: arithmetic/logic (mode A)
+10: branch/subroutine call (mode B)
+11: other (mode A/C)
+
+and, or, xor functions are and_inst, or_inst, xor_inst
+0101000011111001
+
+
 The 16k cache is not emulated; all components access RAM directly. As such, the 16k binary is prewritten into RAM.
 
 
