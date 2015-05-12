@@ -1,0 +1,4 @@
+Rhombus: the Parallelogram by LFT FPGA Demo Emulator v0.0.1-branch-byte-handling-rewrite (c) sirwinstoncat5
+Press Enter to continue...
+16384 bytes loaded from "rom.bin".
+Ready to run.

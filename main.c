@@ -7,12 +7,23 @@
 */
 
 #include <stdio.h>
+#include "SDL/SDL.h"
 #include <stdint.h>
 uint8_t fpga_mem[2097152];
 //uint16_t cpu_cache[8192];
 char* version="v0.0.1-branch-byte-handling-rewrite";
-main()
+int main( int argc, char* args[] )
 {
+	SDL_Surface* hello=NULL;
+	SDL_Surface* screen=NULL;
+	SDL_Init(SDL_INIT_EVERYTHING);
+	screen=SDL_SetVideoMode(1024, 768, 32, SDL_SWSURFACE);
+	hello=SDL_LoadBMP("hello.bmp");
+	SDL_BlitSurface(hello, NULL, screen, NULL);
+	SDL_Flip(screen);
+	SDL_Delay(2000);
+	SDL_FreeSurface(hello);
+	SDL_Quit();
 	printf("Rhombus: the Parallelogram by LFT FPGA Demo Emulator %s (c) sirwinstoncat5\nPress Enter to continue...\n", version);
 	//Load ROM binary into first 16k of RAM
 	FILE* demoROM=fopen("rom.bin", "rb");
