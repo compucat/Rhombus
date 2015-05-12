@@ -3,7 +3,9 @@
 	Copyright: May 2015
 	Author: sirwinstoncat5
 	Date: 01/05/15 21:17
-	Description: An emulator for LFT's "Parallelogram" FPGA demo.
+	Description: An emulator for Linus "lft" Akesson's "Parallelogram" FPGA demo.
+	
+	Dedicated to "M" Akesson, hinted at in the original video and YouTube comments.
 */
 
 #include <stdio.h>
@@ -13,7 +15,7 @@ uint16_t fpga_mem[1048576];
 char* version="v0.0.2";
 int main( int argc, char* args[] )
 {
-	RhombusGFXInit(1024, 768);
+	RhombusGFXInit(320, 240);
 	printf("Rhombus: the Parallelogram by LFT FPGA Demo Emulator %s (c) sirwinstoncat5\nPress Enter to continue...\n", version);
 	//Load ROM binary into first 16k of RAM
 	FILE* demoROM=fopen("rom.bin", "rb");
@@ -27,7 +29,9 @@ int main( int argc, char* args[] )
 	//getchar();
 	//ROMList();
 	printf("Ready to run.\n");
-	getchar();
+	sleep(1);
+	//getchar();
+	RhombusDrawFrame();
 	for(;;) CPUcycle();
 	RhombusGFXQuit();
 }
