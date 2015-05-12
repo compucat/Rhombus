@@ -13,9 +13,7 @@ uint16_t fpga_mem[1048576];
 char* version="v0.0.2";
 int main( int argc, char* args[] )
 {
-	//RhombusGFXInit();
-	//sleep(2);
-	//RhombusGFXQuit();
+	RhombusGFXInit(1024, 768);
 	printf("Rhombus: the Parallelogram by LFT FPGA Demo Emulator %s (c) sirwinstoncat5\nPress Enter to continue...\n", version);
 	//Load ROM binary into first 16k of RAM
 	FILE* demoROM=fopen("rom.bin", "rb");
@@ -31,4 +29,5 @@ int main( int argc, char* args[] )
 	printf("Ready to run.\n");
 	getchar();
 	for(;;) CPUcycle();
+	RhombusGFXQuit();
 }
