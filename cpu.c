@@ -6,14 +6,11 @@
 #define BINARY_BIG_ENDIAN 1 //currently useless
 //*****Begin definitions/prototypes*****
 
-//Memory stuff
-/* TODO (sirwinstoncat5#9#): Redo memory handling from using words to 
-                             using bytes */
-extern uint8_t fpga_mem[2097152]; 
+extern uint16_t fpga_mem[1048576]; 
 uint16_t GPreg[8], PC, SP, productHigh, productLow;
 int zeroFlag, carryFlag;
-inline uint8_t CPUReadMemory(uint16_t address);
-inline void CPUWriteMemory(uint16_t address, uint8_t value);
+inline uint16_t CPUReadMemory(uint16_t address);
+inline void CPUWriteMemory(uint16_t address, uint16_t value);
 
 //CPU cycle variables
 uint16_t instruction, opgroup, opcodea, opcodeb, opcodec, opera1, opera2, opera3, operb, operc1, operc2, operc3;
@@ -22,7 +19,7 @@ uint16_t instruction, opgroup, opcodea, opcodeb, opcodec, opera1, opera2, opera3
 void ROMList(void) //Lists the ROM in hex
 {
 	int i;
-	for(i=0; i<16384; i++)
+	for(i=0; i<8192; i++)
 	{
 		printf("%x\n", CPUReadMemory(i));
 	}
@@ -89,11 +86,11 @@ inline void initv(void);
 
 //*****Begin functions*****
 
-inline uint8_t CPUReadMemory(uint16_t address)
+inline uint16_t CPUReadMemory(uint16_t address)
 {
 	return fpga_mem[address];
 }
-inline void CPUWriteMemory(uint16_t address, uint8_t value)
+inline void CPUWriteMemory(uint16_t address, uint16_t value)
 {
 	fpga_mem[address]=value;
 }
@@ -101,7 +98,7 @@ inline void CPUWriteMemory(uint16_t address, uint8_t value)
 void CPUinit(void)
 {
 	PC=0;
-	SP=131072;
+	SP=65535;
 	//ROM is loaded by main.c
 }
 
@@ -110,24 +107,24 @@ inline void CPUcycle(void)
 	if(CPU_SWITCH_DEBUG==1) printf("CPU Cycle! PC=%d\n", PC);
 	instruction=CPUReadMemory(PC++); //Increment PC after accessing it
 	//*********NOTE********* This should be big-endian.
-	//if(BINARY_BIG_ENDIAN==1) instruction=(instruction>>8)+(instruction<<8);
+	if(BINARY_BIG_ENDIAN==1) instruction=(instruction>>8)+(instruction<<8);
 	if(CPU_SWITCH_DEBUG==1) printf("Instruction in hex: %x\n", instruction);
 	//Decode instruction into opcode and operands
 	//Note that depending on addressing mode, some operands may be garbage
-	opgroup=instruction>>6;
-	opcodea=(instruction>>3);
-	opcodeb=(instruction>>1);
+	opgroup=instruction>>14;
+	opcodea=instruction>>11;
+	opcodeb=instruction>>9;
 	opcodec=opcodea;
-	opera1=instruction-(opcodea<<3);
-	operb=instruction-(opcodeb<<1);
-	operc1=opera1;
-	instruction=CPUReadMemory(PC++); //Get second byte of instruction
-	if(CPU_SWITCH_DEBUG==1) printf("Instruction in hex: %x\n", instruction);
-	opera2=instruction>>3;
-	opera3=instruction-(opera2<<3);
-	operb=instruction+(operb<<8);
-	operc2=instruction>>7;
-	operc3=instruction-(operc2<<7);
+	//Addressing mode A, used for most instructions
+	opera1=(instruction>>8)-(opcodea<<3);
+	opera2=(instruction>>3)-(opcodea<<8)-(opera1<<5);
+	opera3=instruction-(opcodea<<11)-(opera1<<8)-(opera2<<3);
+	//Addressing mode B, used for branches and subroutine calls
+	operb=instruction-(opcodeb<<9);
+	//Addressing mode C, used for vector jump/calls and load effective address
+	operc1=(instruction>>8)-(opcodec<<3);
+	operc2=(instruction>>7)-(opcodec<<4)-(operc1<<1);
+	operc3=instruction-(opcodec<<11)-(operc1<<8)-(operc2<<7);
 	
 	if(CPU_SWITCH_DEBUG==1) printf("OpcodeA: %d\nOperA1: %d\nOperA2: %d\nOperA3: %d\n----------------------\n", opcodea, opera1, opera2, opera3);
 	//Determine addressing mode
@@ -306,6 +303,7 @@ inline void CPUcycle(void)
 //Opcode functions
 inline void movih(void)
 {
+	if(CPU_SWITCH_DEBUG==1) printf("Movih\n");
 	GPreg[opera1]=(opcodea-(opgroup<<3))+(opera2<<3)+opera3;
 }
 inline void add(void) 
@@ -462,15 +460,11 @@ inline void lea(void) {OpcodeNotDone();}
 //Miscellaneous
 inline void push(void)
 {
-	CPUWriteMemory((GPreg[opera1]>>8), SP-1); //Assuming big endian
-	CPUWriteMemory((GPreg[opera1]&0b0000000011111111), SP);
-	SP-=2;
+	CPUWriteMemory(GPreg[opera1], SP--); //Assuming big endian?
 }
 inline void pop(void)
 {
 	GPreg[opera1]=CPUReadMemory(++SP);
-	GPreg[opera1]=GPreg[opera1]<<8;
-	GPreg[opera1]+=CPUReadMemory(++SP);
 }
 inline void nop(void)
 {

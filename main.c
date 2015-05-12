@@ -1,5 +1,5 @@
 /*
-	Name: Rhombus v0.0.1
+	Name: Rhombus
 	Copyright: May 2015
 	Author: sirwinstoncat5
 	Date: 01/05/15 21:17
@@ -7,25 +7,15 @@
 */
 
 #include <stdio.h>
-#include "SDL/SDL.h"
 #include <stdint.h>
-uint8_t fpga_mem[2097152];
+uint16_t fpga_mem[1048576];
 //uint16_t cpu_cache[8192];
-char* version="v0.0.1-branch-byte-handling-rewrite";
+char* version="v0.0.2";
 int main( int argc, char* args[] )
 {
-	SDL_Surface* hello=NULL;
-	SDL_Surface* screen=NULL;
-	SDL_Init(SDL_INIT_EVERYTHING);
-	freopen( "CON", "w", stdout ); //Redirect stdout back to console
-	freopen( "CON", "w", stderr );
-	screen=SDL_SetVideoMode(1024, 768, 32, SDL_SWSURFACE);
-	hello=SDL_LoadBMP("hello.bmp");
-	SDL_BlitSurface(hello, NULL, screen, NULL);
-	SDL_Flip(screen);
-	SDL_Delay(2000);
-	SDL_FreeSurface(hello);
-	SDL_Quit();
+	//RhombusGFXInit();
+	//sleep(2);
+	//RhombusGFXQuit();
 	printf("Rhombus: the Parallelogram by LFT FPGA Demo Emulator %s (c) sirwinstoncat5\nPress Enter to continue...\n", version);
 	//Load ROM binary into first 16k of RAM
 	FILE* demoROM=fopen("rom.bin", "rb");
@@ -34,7 +24,7 @@ int main( int argc, char* args[] )
 		printf("Error: ROM failed to load. Does the file exist?\n");
 		return;
 	}
-	printf("%d bytes loaded from \"rom.bin\".\n", fread(fpga_mem, sizeof(uint8_t), 16384, demoROM));
+	printf("%d bytes loaded from \"rom.bin\".\n", 2*fread(fpga_mem, sizeof(uint16_t), 8192, demoROM));
 	fclose(demoROM);
 	//getchar();
 	//ROMList();

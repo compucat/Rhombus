@@ -4,8 +4,8 @@
 CPP      = g++.exe -D__DEBUG__
 CC       = gcc.exe -D__DEBUG__
 WINDRES  = windres.exe
-OBJ      = main.o example.o cpu.o notes.o
-LINKOBJ  = main.o example.o cpu.o notes.o
+OBJ      = main.o example.o cpu.o notes.o GFX_SDL_1.2.o
+LINKOBJ  = main.o example.o cpu.o notes.o GFX_SDL_1.2.o
 LIBS     = -L"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib32" -L"C:/Program Files (x86)/Dev-Cpp/MinGW64/x86_64-w64-mingw32/lib32" -L"E:/Clibs/SDL2-2.0.3/i686-w64-mingw32/lib" -L"E:/Clibs/SDL-1.2.15/lib" -static-libgcc -lmingw32 -lSDLmain -lSDL  -m32 -g3
 INCS     = -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include" -I"E:/Clibs/SDL2-2.0.3/i686-w64-mingw32/include/SDL2" -I"E:/Clibs/libfmsynth-master/include" -I"E:/Clibs/SDL-1.2.15/include"
 CXXINCS  = -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.7.1/include/c++"
@@ -35,3 +35,6 @@ cpu.o: cpu.c
 
 notes.o: notes.c
 	$(CC) -c notes.c -o notes.o $(CFLAGS)
+
+GFX_SDL_1.2.o: GFX_SDL_1.2.c
+	$(CC) -c GFX_SDL_1.2.c -o GFX_SDL_1.2.o $(CFLAGS)
