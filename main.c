@@ -17,6 +17,8 @@ int main( int argc, char* args[] )
 	SDL_Surface* hello=NULL;
 	SDL_Surface* screen=NULL;
 	SDL_Init(SDL_INIT_EVERYTHING);
+	freopen( "CON", "w", stdout ); //Redirect stdout back to console
+	freopen( "CON", "w", stderr );
 	screen=SDL_SetVideoMode(1024, 768, 32, SDL_SWSURFACE);
 	hello=SDL_LoadBMP("hello.bmp");
 	SDL_BlitSurface(hello, NULL, screen, NULL);
