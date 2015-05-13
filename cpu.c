@@ -7,8 +7,13 @@
 //*****Begin definitions/prototypes*****
 
 extern uint16_t fpga_mem[1048576]; 
-uint16_t GPreg[8], PC, SP, productHigh, productLow;
+uint16_t GPreg[8], PC, SP;
 int zeroFlag, carryFlag;
+uint16_t outPort[8], inPort[8];
+//Input ports (0-5):
+//	productLow, productHigh, status flags, uart receive, frame counter, benchmark timer
+//Output ports (0-7):
+//	blitter row, blitter col, blitter width, blitter height (write starts blit), blitter program, active vid page (1-3), synth register select, synth register data
 inline uint16_t CPUReadMemory(uint16_t address);
 inline void CPUWriteMemory(uint16_t address, uint16_t value);
 
@@ -450,8 +455,14 @@ inline void cal(void) {OpcodeNotDone();}
 inline void ld(void) {OpcodeNotDone();}
 inline void st(void) {OpcodeNotDone();}
 //IO
-inline void in(void) {OpcodeNotDone();}
-inline void out(void) {OpcodeNotDone();}
+inline void in(void)
+{
+	GPreg[opera1]=inPort[opera2];
+}
+inline void out(void)
+{
+	outPort[opera2]=GPreg[opera1];
+}
 //Vector jump/call
 inline void jv(void) {OpcodeNotDone();}
 inline void cv(void) {OpcodeNotDone();}
@@ -473,10 +484,13 @@ inline void nop(void)
 inline void mul(void)
 {
 	uint32_t i=GPreg[opera1]*GPreg[opera3];
-	productHigh=i>>16;
-	productLow=i-(productHigh<<16);
+	inPort[1]=i>>16;
+	inPort[0]=i-(inPort[1]<<16);
 }
-inline void stsp(void) {OpcodeNotDone();}
+inline void stsp(void)
+{
+	SP=GPreg[opera1];
+}
 inline void prod(void) {OpcodeNotDone();}
 inline void jr(void) {OpcodeNotDone();}
 inline void cr(void) {OpcodeNotDone();}
