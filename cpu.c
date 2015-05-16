@@ -36,55 +36,57 @@ inline void CPUcycle(void);
 
 //Opcode function prototypes
 void OpcodeNotDone(void) {printf("CPU Error: Opcode not written yet!\n");}
-inline void movih(void);
-inline void add(void);
-inline void addi(void);
-inline void adc(void);
-inline void adci(void);
-inline void sub(void);
-inline void subi(void);
-inline void and_inst(void);
-inline void andi(void);
-inline void or_inst(void);
-inline void ori(void);
-inline void xor_inst(void);
-inline void xori(void);
-inline void cmp(void);
-inline void cmpi(void);
-inline void mov(void);
-inline void movi(void);
+inline void movih(void); //done
+inline void add(void); //done
+inline void addi(void); //done
+inline void adc(void); //done
+inline void adci(void); //done
+inline void sub(void); //done
+inline void subi(void); //done
+inline void and_inst(void); //done
+inline void andi(void); //done
+inline void or_inst(void); //done
+inline void ori(void); //done
+inline void xor_inst(void); //done
+inline void xori(void); //done
+inline void cmp(void); //done
+inline void cmpi(void); //done
+inline void mov(void); //done
+inline void movi(void); //done
 inline void bgt(void);
-inline void bne(void);
-inline void bcc(void);
-inline void bcs(void);
-inline void beq(void);
+inline void bne(void); //done
+inline void bcc(void); //done
+inline void bcs(void); //done
+inline void beq(void); //done
 inline void ble(void);
-inline void bal(void);
-inline void cgt(void);
-inline void cne(void);
-inline void ccc(void);
-inline void ccs(void);
-inline void ceq(void);
-inline void cle(void);
-inline void cal(void);
-inline void ld(void);
-inline void st(void);
-inline void in(void);
-inline void out(void);
+inline void bal(void); //done
+//Call instructions rely on branch instructions
+inline void cgt(void); //done
+inline void cne(void); //done
+inline void ccc(void); //done
+inline void ccs(void); //done
+inline void ceq(void); //done
+inline void cle(void); //done
+inline void cal(void); //done
+//End call instructions
+inline void ld(void); //done   //Assuming opera2 is an immediate value, opera3 refers to a register, and opera2 is unsigned
+inline void st(void); //done   //Assuming opera2 is an immediate value, opera3 refers to a register, and opera2 is unsigned
+inline void in(void); //done
+inline void out(void); //done
 inline void jv(void);
-inline void cv(void);
+inline void cv(void); //done, relies on jv
 inline void lea(void);
-inline void push(void);
-inline void pop(void);
-inline void nop(void);
-inline void mul(void);
-inline void stsp(void);
+inline void push(void); //done
+inline void pop(void); //done
+inline void nop(void); //done
+inline void mul(void); //done
+inline void stsp(void); //done
 inline void prod(void);
-inline void jr(void);
-inline void cr(void);
-inline void ret(void);
+inline void jr(void); //done
+inline void cr(void); //done
+inline void ret(void); //done
 inline void wait(void);
-inline void send(void);
+inline void send(void); //done
 inline void ldsf(void);
 inline void stsf(void);
 inline void initv(void);
@@ -306,6 +308,7 @@ inline void CPUcycle(void)
 }
 
 //Opcode functions
+//Arithmetic, etc.
 inline void movih(void)
 {
 	if(CPU_SWITCH_DEBUG==1) printf("Movih\n");
@@ -464,7 +467,7 @@ inline void ccs(void)
 	CPUWriteMemory(PC, SP--);
 	bcs;
 }
-inline void ceq(void) {OpcodeNotDone();}
+inline void ceq(void)
 {
 	CPUWriteMemory(PC, SP--);
 	beq;
@@ -480,8 +483,14 @@ inline void cal(void)
 	bal;
 }
 //Memory
-inline void ld(void) {OpcodeNotDone();}
-inline void st(void) {OpcodeNotDone();}
+inline void ld(void) //Assuming opera2 is an immediate value, opera3 refers to a register, and opera2 is unsigned
+{
+	GPreg[opera1]=CPUReadMemory(GPreg[opera3]+opera2);
+}
+inline void st(void) //Assuming opera2 is an immediate value, opera3 refers to a register, and opera2 is unsigned
+{
+	CPUWriteMemory(GPreg[opera1], GPreg[opera3]+opera2);
+}
 //IO
 inline void in(void)
 {
@@ -493,7 +502,11 @@ inline void out(void)
 }
 //Vector jump/call
 inline void jv(void) {OpcodeNotDone();}
-inline void cv(void) {OpcodeNotDone();}
+inline void cv(void)
+{
+	CPUWriteMemory(PC, SP--);
+	jv();
+}
 //Load effective address
 inline void lea(void) {OpcodeNotDone();}
 //Miscellaneous
@@ -520,8 +533,15 @@ inline void stsp(void)
 	SP=GPreg[opera1];
 }
 inline void prod(void) {OpcodeNotDone();}
-inline void jr(void) {OpcodeNotDone();}
-inline void cr(void) {OpcodeNotDone();}
+inline void jr(void)
+{
+	PC=GPreg[opera1];
+}
+inline void cr(void)
+{
+	CPUWriteMemory(PC, SP--);
+	jr();
+}
 inline void ret(void)
 {
 	PC=CPUReadMemory(++SP);

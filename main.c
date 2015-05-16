@@ -12,7 +12,7 @@
 #include <stdint.h>
 uint16_t fpga_mem[1048576];
 //uint16_t cpu_cache[8192];
-char* version="v0.0.2";
+char* version="v0.0.3";
 int main( int argc, char* args[] )
 {
 	RhombusGFXInit(320, 240);
