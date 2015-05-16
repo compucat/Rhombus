@@ -1,6 +1,6 @@
 /*
-***Backend API Description***
------------------------------
+***Rhombus Backend API Description***
+-------------------------------------
 
 Greetings, fellow API developer! Here's a description of what you need to do to write a new backend for Rhombus.
 

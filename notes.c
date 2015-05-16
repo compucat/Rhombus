@@ -1,3 +1,6 @@
+//This file is part of Rhombus, but contains copied content from others, namely Linus Akesson.
+//As such, all content that is my own is licensed under the GPL v3, but all other content
+//is licensed as its author wishes.
 /*
 Opgroups (binary):
 00: movih (mode A)
