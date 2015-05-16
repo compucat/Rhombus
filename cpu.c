@@ -444,13 +444,41 @@ inline void bal(void)
 	PC+=i;
 }
 //Subroutine calls
-inline void cgt(void) {OpcodeNotDone();}
-inline void cne(void) {OpcodeNotDone();}
-inline void ccc(void) {OpcodeNotDone();}
-inline void ccs(void) {OpcodeNotDone();}
+inline void cgt(void)
+{
+	CPUWriteMemory(PC, SP--);
+	bgt;
+}
+inline void cne(void)
+{
+	CPUWriteMemory(PC, SP--);
+	bne;
+}
+inline void ccc(void)
+{
+	CPUWriteMemory(PC, SP--);
+	bcc;
+}
+inline void ccs(void)
+{
+	CPUWriteMemory(PC, SP--);
+	bcs;
+}
 inline void ceq(void) {OpcodeNotDone();}
-inline void cle(void) {OpcodeNotDone();}
-inline void cal(void) {OpcodeNotDone();}
+{
+	CPUWriteMemory(PC, SP--);
+	beq;
+}
+inline void cle(void)
+{
+	CPUWriteMemory(PC, SP--);
+	ble;
+}
+inline void cal(void)
+{
+	CPUWriteMemory(PC, SP--);
+	bal;
+}
 //Memory
 inline void ld(void) {OpcodeNotDone();}
 inline void st(void) {OpcodeNotDone();}
@@ -494,7 +522,10 @@ inline void stsp(void)
 inline void prod(void) {OpcodeNotDone();}
 inline void jr(void) {OpcodeNotDone();}
 inline void cr(void) {OpcodeNotDone();}
-inline void ret(void) {OpcodeNotDone();}
+inline void ret(void)
+{
+	PC=CPUReadMemory(++SP);
+}
 inline void wait(void) {OpcodeNotDone();}
 inline void send(void)
 {
