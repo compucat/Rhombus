@@ -20,7 +20,7 @@ Addressing modes:
 where a: opgroup, b: opcode, c: operand 1, d: operand 2, e: operand 3
 
 
-CPU Instructions
+CPU Instructions copied from linusakesson.net
 
 Move immediate high (d <- c * 32)
 00 ccc ddd ccccc ccc    movih   d, c
@@ -103,6 +103,7 @@ Input ports
 011 uart receive buffer
 100 frame counter (global time)
 101 benchmark timer
+
 Output ports
 
 000 blitter row

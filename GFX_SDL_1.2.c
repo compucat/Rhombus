@@ -1,4 +1,5 @@
 //SDL 1.2 graphics backend
+//Also handles other useful functions (such as the 10ms music timer)
 #include <stdint.h>
 #include "SDL/SDL.h"
 SDL_Surface* hello=NULL;
