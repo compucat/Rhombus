@@ -20,42 +20,67 @@
 */
 #include <stdint.h>
 #include "SDL/SDL.h"
-SDL_Surface* hello=NULL;
+extern uint16_t outPort[8];
+SDL_Surface* qvga_buffer=NULL;
 SDL_Surface* screen=NULL;
 void RhombusGFXInit(int scr_height, int scr_width);
 void RhombusGFXQuit(void);
 void RhombusDrawFrame(void);
 void putpixel(SDL_Surface *surface, int x, int y, uint32_t pixel);
 uint32_t getpixel(SDL_Surface *surface, int x, int y);
-void RhombusGFXInit(int scr_height, int scr_width)
+void scaleBlit(SDL_Surface* src, SDL_Surface* dst);
+void RhombusGFXInit(int scr_width, int scr_height)
 {
 	SDL_Init(SDL_INIT_EVERYTHING);
 	SDL_WM_SetCaption("Rhombus: the Parallelogram by LFT FPGA Demo Emulator", "Rhombus");
 	SDL_WM_SetIcon(SDL_LoadBMP("icon.bmp"), NULL);
 	freopen( "CON", "w", stdout ); //Redirect stdout back to console
 	freopen( "CON", "w", stderr );
-	screen=SDL_SetVideoMode(scr_height, scr_width, 32, SDL_SWSURFACE);
-	hello=SDL_LoadBMP("hello.bmp");
-	SDL_BlitSurface(hello, NULL, screen, NULL);
+	screen=SDL_SetVideoMode(scr_width, scr_height, 32, SDL_SWSURFACE);
+	SDL_Surface* splash=SDL_LoadBMP("hello.bmp");
+	scaleBlit(splash, screen);
 	SDL_Flip(screen);
+	SDL_FreeSurface(splash);
+	qvga_buffer=SDL_CreateRGBSurface(SDL_SWSURFACE, 320, 240, 32, 0, 0, 0, 0);
 }
 
 void RhombusGFXQuit(void)
 {
-	SDL_FreeSurface(hello);
+	SDL_FreeSurface(qvga_buffer);
 	SDL_Quit();
 }
 
 void RhombusDrawFrame(void)
 {
 	//test
-	SDL_LockSurface(screen);
+	printf("mustlock %d\n", SDL_MUSTLOCK(qvga_buffer));
+	if(SDL_MUSTLOCK(qvga_buffer)!=0) SDL_LockSurface(qvga_buffer);
+	int addr;
+	addr=131072*outPort[6];
 	int i;
-	for(i=0; i<240; i++) putpixel(screen, i, i, i);
-	SDL_UnlockSurface(screen);
+	for(i=0; i<240; i++) putpixel(qvga_buffer, i, i, i); //Draw a test line
+	SDL_UnlockSurface(qvga_buffer);
+	printf("bufferxy: %d%d\n", qvga_buffer->w, qvga_buffer->h);
+	scaleBlit(qvga_buffer, screen);
 	SDL_Flip(screen);
 }
-//Defined by SDL: 
+
+void scaleBlit(SDL_Surface* src, SDL_Surface* dst) //Should have used SDL 2, probably a huge bottleneck, oh well.
+{
+	SDL_LockSurface(src);
+	SDL_LockSurface(dst);
+	float i, j;
+	for(i=0; i<dst->w; i++)
+	{
+		for(j=0; j<dst->h; j++)
+		{
+			putpixel(dst, i, j, getpixel(src, (int) i*((float)(src->w)/(float)(dst->w)), (int) j*((float)(src->h)/(float)(dst->h))));
+		}
+	}
+	SDL_UnlockSurface(src);
+	SDL_UnlockSurface(dst);
+}
+//Copied from SDL spec:
 //void putpixel(SDL_Surface *surface, int x, int y, Uint32 pixel)
 //Uint32 getpixel(SDL_Surface *surface, int x, int y)
 //Before use, lock surface using SDL_LockSurface(surface)

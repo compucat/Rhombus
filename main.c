@@ -23,10 +23,10 @@
 #define GPL_LICENSE_STRING "\n\nLicensed under the GNU GPL v3\nThis program comes with ABSOLUTELY NO WARRANTY; for details, see\n\tgithub.com/sirwinstoncat5/Rhombus/blob/master/LICENSE.txt.\nThis is free software, and you are welcome to redistribute it\nunder certain conditions; for details, see the license mentioned above.\n\n"
 uint16_t fpga_mem[1048576];
 //uint16_t cpu_cache[8192];
-char* version="v0.0.3";
+char* version="v0.0.4";
 int main( int argc, char* args[] )
 {
-	RhombusGFXInit(320, 240);
+	RhombusGFXInit(800, 600);
 	printf("Rhombus: the Parallelogram by LFT FPGA Demo Emulator %s\nCopyright (C) 2015 sirwinstoncat5 (GitHub username)\n%s\nPress Enter to continue...\n", version, GPL_LICENSE_STRING);
 	//Load ROM binary into first 16k of RAM
 	FILE* demoROM=fopen("rom.bin", "rb");
@@ -40,9 +40,9 @@ int main( int argc, char* args[] )
 	//getchar();
 	//ROMList();
 	printf("Ready to run.\n");
-	sleep(10);
+	sleep(1);
 	//getchar();
-	RhombusDrawFrame();
+	RhombusDrawFrame(); //Note: call every 20 ms (2 music ticks) for 50 fps, every 16.6666666.... ms (1.6666666... music ticks) for 60 fps
 	for(;;) CPUcycle();
 	RhombusGFXQuit();
 }
