@@ -21,7 +21,8 @@
 #include <stdio.h>
 #include <stdint.h>
 #define CPU_SWITCH_DEBUG 0
-#define BINARY_BIG_ENDIAN 1 //currently useless
+#define BINARY_BIG_ENDIAN 1 //Switches the endian-ness of the instruction on-the-fly, may or may not be needed.
+//Determine if this is needed experimentally.
 //*****Begin definitions/prototypes*****
 
 extern uint16_t fpga_mem[1048576]; 
@@ -530,7 +531,7 @@ inline void lea(void) {OpcodeNotDone();}
 //Miscellaneous
 inline void push(void)
 {
-	CPUWriteMemory(GPreg[opera1], SP--); //Assuming big endian?
+	CPUWriteMemory(GPreg[opera1], SP--);
 }
 inline void pop(void)
 {
