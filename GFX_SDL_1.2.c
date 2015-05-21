@@ -70,11 +70,13 @@ void scaleBlit(SDL_Surface* src, SDL_Surface* dst) //Should have used SDL 2, pro
 	SDL_LockSurface(src);
 	SDL_LockSurface(dst);
 	float i, j;
+	float scalex=(src->w)/(dst->w);
+	float scaley=(src->h)/(dst->h);
 	for(i=0; i<dst->w; i++)
 	{
 		for(j=0; j<dst->h; j++)
 		{
-			putpixel(dst, i, j, getpixel(src, (int) i*((float)(src->w)/(float)(dst->w)), (int) j*((float)(src->h)/(float)(dst->h))));
+			putpixel(dst, i, j, getpixel(src, (int) (i*scalex), (int) (j*scaley)));
 		}
 	}
 	SDL_UnlockSurface(src);
