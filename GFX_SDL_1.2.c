@@ -52,15 +52,15 @@ void RhombusGFXQuit(void)
 
 void RhombusDrawFrame(void)
 {
-	//test
-	printf("mustlock %d\n", SDL_MUSTLOCK(qvga_buffer));
-	if(SDL_MUSTLOCK(qvga_buffer)!=0) SDL_LockSurface(qvga_buffer);
+	SDL_LockSurface(qvga_buffer);
 	int addr;
 	addr=131072*outPort[6];
-	int i;
-	for(i=0; i<240; i++) putpixel(qvga_buffer, i, i, i); //Draw a test line
+	int i, j;
+	//Begin test routine
+	for(i=0; i<320; i++) for(j=0; j<240; j++) putpixel(qvga_buffer, i, j, rand()*rand()); //Draw a test screen
+	//End test routine
+	//Insert actual framebuffer drawing here
 	SDL_UnlockSurface(qvga_buffer);
-	printf("bufferxy: %d%d\n", qvga_buffer->w, qvga_buffer->h);
 	scaleBlit(qvga_buffer, screen);
 	SDL_Flip(screen);
 }
@@ -70,12 +70,15 @@ void scaleBlit(SDL_Surface* src, SDL_Surface* dst) //Should have used SDL 2, pro
 	SDL_LockSurface(src);
 	SDL_LockSurface(dst);
 	float i, j;
-	float scalex=(src->w)/(dst->w);
-	float scaley=(src->h)/(dst->h);
+	float scalex=(float) (src->w)/(float) (dst->w);
+	float scaley=(float) (src->h)/(float) (dst->h);
+	//printf("scale: %f, %f\n", scalex, scaley);
+	//getchar();
 	for(i=0; i<dst->w; i++)
 	{
 		for(j=0; j<dst->h; j++)
 		{
+			//printf("xy to xy: %d, %d, %d, %d\n", (int) (i*scalex), (int) (j*scaley), (int) i, (int) j);
 			putpixel(dst, i, j, getpixel(src, (int) (i*scalex), (int) (j*scaley)));
 		}
 	}

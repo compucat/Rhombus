@@ -43,6 +43,26 @@ int main( int argc, char* args[] )
 	sleep(1);
 	//getchar();
 	RhombusDrawFrame(); //Note: call every 20 ms (2 music ticks) for 50 fps, every 16.6666666.... ms (1.6666666... music ticks) for 60 fps
-	for(;;) CPUcycle();
+	int i=0;
+	for(;;)
+	{
+		for(i=0; i<630000; i++); //10 ms worth of CPU cycling
+		{
+			CPUcycle();
+			//Update synth?
+		}
+		//Call audio routine
+		//Wait until 10ms has actually passed
+		//printf("\nping\n");
+		for(i=0; i<630000; i++); //10 ms worth of CPU cycling
+		{
+			CPUcycle();
+			//Update synth?
+		}
+		//Call audio routine
+		//Wait until 10ms has actually passed
+		//printf("\npong\n");
+		RhombusDrawFrame();
+	}
 	RhombusGFXQuit();
 }
