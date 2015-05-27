@@ -52,6 +52,10 @@ void RhombusGFXQuit(void)
 
 void RhombusDrawFrame(void)
 {
+	SDL_Event evt;
+	SDL_PollEvent(&evt);
+	if(evt.type==SDL_QUIT) exit(0);
+	
 	SDL_LockSurface(qvga_buffer);
 	int addr;
 	addr=131072*outPort[6];
