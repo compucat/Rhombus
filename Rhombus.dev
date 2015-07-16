@@ -4,8 +4,8 @@ Name=Rhombus
 Type=1
 Ver=2
 ObjFiles=
-Includes=
-Libs=
+Includes=E:\Clibs\SDL-1.2.15\include
+Libs=E:\Clibs\SDL-1.2.15\lib
 PrivateResource=
 ResourceIncludes=
 MakeIncludes=
@@ -27,8 +27,8 @@ CommandLine=
 Folders=
 IncludeVersionInfo=0
 SupportXPThemes=0
-CompilerSet=6
-CompilerSettings=0000000000000000000000000
+CompilerSet=4
+CompilerSettings=0000000100000000001000000
 UnitCount=6
 
 [VersionInfo]

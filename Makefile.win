@@ -1,18 +1,18 @@
 # Project: Rhombus
-# Makefile created by Dev-C++ 5.11
+# Makefile created by Dev-C++ 5.5.3
 
-CPP      = g++.exe
-CC       = gcc.exe
+CPP      = g++.exe -D__DEBUG__
+CC       = gcc.exe -D__DEBUG__
 WINDRES  = windres.exe
 OBJ      = main.o example.o cpu.o notes.o GFX_SDL_1.2.o backendAPIDescription.o
 LINKOBJ  = main.o example.o cpu.o notes.o GFX_SDL_1.2.o backendAPIDescription.o
-LIBS     = -L"C:/MinGW/lib" -L"C:/MinGW/mingw32/lib" -static-libstdc++ -static-libgcc -lmingw32 -lSDLmain -lSDL
-INCS     = -I"C:/MinGW/include" -I"C:/MinGW/lib/gcc/mingw32/4.8.1/include"
-CXXINCS  = -I"C:/MinGW/include" -I"C:/MinGW/lib/gcc/mingw32/4.8.1/include"
+LIBS     = -L"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib32" -L"C:/Program Files (x86)/Dev-Cpp/MinGW64/x86_64-w64-mingw32/lib32" -static-libgcc -L"E:/Clibs/SDL-1.2.15/lib" -lmingw32 -lSDLmain -lSDL  -m32 -g3
+INCS     = -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include" -I"E:/Clibs/SDL-1.2.15/include"
+CXXINCS  = -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.7.1/include/c++" -I"E:/Clibs/SDL-1.2.15/include"
 BIN      = Rhombus.exe
-CXXFLAGS = $(CXXINCS) 
-CFLAGS   = $(INCS) 
-RM       = rm.exe -f
+CXXFLAGS = $(CXXINCS) -m32 -g3
+CFLAGS   = $(INCS) -m32 -g3
+RM       = rm -f
 
 .PHONY: all all-before all-after clean clean-custom
 

@@ -23,7 +23,7 @@
 #define GPL_LICENSE_STRING "\n\nLicensed under the GNU GPL v3\nThis program comes with ABSOLUTELY NO WARRANTY; for details, see\n\tgithub.com/sirwinstoncat5/Rhombus/blob/master/LICENSE.txt.\nThis is free software, and you are welcome to redistribute it\nunder certain conditions; for details, see the license mentioned above.\n\n"
 uint16_t fpga_mem[1048576];
 //uint16_t cpu_cache[8192];
-char* version="v0.0.4";
+char* version="v0.0.5";
 int main( int argc, char* args[] )
 {
 	RhombusGFXInit(800, 600);

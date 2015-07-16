@@ -1,6 +1,6 @@
 /*
 	SDL 1.2 Graphics Backend
-	Also handles other useful functions (such as the 10ms music timer
+	Also handles other useful functions (such as the 10ms music timer)
 	
 	This file is part of Rhombus: the emulator for LFT's FPGA demo "Parallelogram".
     Copyright (C) 2015 sirwinstoncat5 (GitHub username)
@@ -59,9 +59,23 @@ void RhombusDrawFrame(void)
 	SDL_LockSurface(qvga_buffer);
 	int addr;
 	addr=131072*outPort[6];
-	int i, j;
+	int i, j, k;
+	uint32_t pix;
 	//Begin test routine
-	for(i=0; i<320; i++) for(j=0; j<240; j++) putpixel(qvga_buffer, i, j, rand()*rand()); //Draw a test screen
+	k=0;
+	for(i=0; i<320; i++) for(j=0; j<240; j++) 
+	{
+		//if(rand()<(RAND_MAX/2)) pix=1;
+		//else pix=0-1;
+		//putpixel(qvga_buffer, i, j, 0b00000000000000000000001111111111); //Draw a test screen
+		//	Generated blue
+		//putpixel(qvga_buffer, i, j, 0b00000000000011111111110000000000); //Draw a test screen
+		//	Generated green
+		//putpixel(qvga_buffer, i, j, 0b11111111110000000000000000000000); //Draw a test screen
+		//	Generated red
+		if(k>0b00000000000000000000001111111111) k=0;
+		putpixel(qvga_buffer, i, j, k++);
+	}
 	//End test routine
 	//Insert actual framebuffer drawing here
 	SDL_UnlockSurface(qvga_buffer);
